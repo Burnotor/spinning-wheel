@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spinning Wheel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <p>Personnalise ta roue de jeu</p>
+    </header>
+
+    <main class="container">
+
+        <!-- Liste des roues sauvegardées -->
+        <aside class="wheel-sidebar">
+
+            <button id="toggleEditor" title="Replier la personnalisation">
+
+                <!-- Icône engrenage : espace personnel -->
+                <svg class="gear-icon" viewBox="0 0 24 24" width="30" height="30" fill="currentColor"
+                    stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+
+                    <path
+                        d="M9.5 1.5h5l.8 3a8 8 0 0 1 1.8.8l2.8-1.3 2.5 4.3-2.2 2.2a8 8 0 0 1 0 2.1l2.2 2.2-2.5 4.3-2.8-1.3a8 8 0 0 1-1.8.8l-.8 3h-5l-.8-3a8 8 0 0 1-1.8-.8l-2.8 1.3-2.5-4.3 2.2-2.2a8 8 0 0 1 0-2.1L1.6 8.3l2.5-4.3 2.8 1.3a8 8 0 0 1 1.8-.8z" />
+
+                    <circle cx="12" cy="12" r="3.2" fill="#383e4b" stroke="currentColor" />
+                </svg>
+
+            </button>
+
+            <div id="wheelList"></div>
+
+            <button id="createWheel" title="Créer une nouvelle roue">
+                +
+            </button>
+
+            <button id="deleteWheel" title="Supprimer la roue sélectionnée">
+                <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
+
+                    <path d="M3 6h18v1.5H3z" />
+                    <path d="M9 3.5h6V6H9z" />
+                    <path d="M5.5 8h13l-1.2 12.5a1.5 1.5 0 0 1-1.5 1.4H8.2a1.5 1.5 0 0 1-1.5-1.4L5.5 8z" />
+                    <path d="M9 10.5h1.5v8H9zM13.5 10.5H15v8h-1.5z" fill="#383e4b" />
+                </svg>
+            </button>
+
+            <!-- Roue visible -->
+            <button id="toggleWheelVisibility" title="Masquer la roue">
+                <svg viewBox="0 0 48 48" width="38" height="38" fill="currentColor">
+                    <path fill-rule="evenodd" d="
+                        M24 7
+                        C13 7 4 17 2 24
+                        C4 31 13 41 24 41
+                        C35 41 44 31 46 24
+                        C44 17 35 7 24 7
+                        Z
+                        M24 16
+                        A8 8 0 1 0 24 32
+                        A8 8 0 1 0 24 16
+                        Z
+                    " />
+                </svg>
+            </button>
+
+            <!-- Roue invisible -->
+            <button id="hideWheelVisibility" title="Afficher la roue">
+                <svg viewBox="0 0 48 48" width="38" height="38" fill="currentColor">
+                    <path fill-rule="evenodd" d="
+                        M24 7
+                        C13 7 4 17 2 24
+                        C4 31 13 41 24 41
+                        C35 41 44 31 46 24
+                        C44 17 35 7 24 7
+                        Z
+                        M24 16
+                        A8 8 0 1 0 24 32
+                        A8 8 0 1 0 24 16
+                        Z
+                    " />
+                    <path d="M9 9 L39 39" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" />
+                </svg>
+            </button>
+
+            <div class="sidebar-separator"></div>
+
+            <button id="openHistory" title="Historique" aria-label="Historique">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+
+                    <!-- Feuille pleine -->
+                    <path d="M6 4H18A2 2 0 0 1 20 6V20A2 2 0 0 1 18 22H6A2 2 0 0 1 4 20V6A2 2 0 0 1 6 4Z"
+                        fill="currentColor" />
+
+                    <!-- Attache supérieure -->
+                    <rect x="8" y="2" width="8" height="4" rx="1" fill="currentColor" />
+
+                    <!-- Lignes et repères en négatif -->
+                    <path d="M8 4H16" stroke="#383e4b" stroke-width="2" />
+
+                    <path d="M12 11h4M12 16h4" stroke="#383e4b" stroke-width="2" stroke-linecap="round" />
+
+                    <path d="M8 11h.01M8 16h.01" stroke="#383e4b" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </button>
+
+            <button id="openPlayers" title="Voir les joueurs" aria-label="Voir les joueurs">
+                <svg viewBox="0 0 48 48" width="40" height="40" fill="currentColor" stroke="currentColor"
+                    stroke-width="2.8">
+                    <circle cx="24" cy="17" r="7" stroke="none" />
+                    <path d="M11 38c1-7 6-11 13-11s12 4 13 11v2H11v-2Z" stroke="none" />
+                </svg>
+            </button>
+
+        </aside>
+
+        <!-- Zone de la roue -->
+        <section class="wheel-section">
+
+            <h1 id="wheelTitle" contenteditable="true" spellcheck="false">
+                Roue 1
+            </h1>
+
+            <div class="wheel-container">
+                <div class="pointer"></div>
+
+                <canvas id="wheelCanvas" width="600" height="600"></canvas>
+
+                <!-- Cadenas affiché au centre de la roue -->
+                <div id="wheelLock" class="wheel-lock">
+
+                    <!-- Cadenas fermé -->
+                    <svg class="lock-closed" viewBox="0 0 64 64" width="30" height="30"
+                        xmlns="http://www.w3.org/2000/svg">
+
+                        <path d="M20 29 V19 A12 12 0 0 1 44 19 V29" fill="none" stroke="currentColor" stroke-width="8"
+                            stroke-linecap="round" />
+
+                        <path
+                            d="M14 26 H50 A7 7 0 0 1 57 33 V53 A7 7 0 0 1 50 60 H14 A7 7 0 0 1 7 53 V33 A7 7 0 0 1 14 26 Z"
+                            fill="currentColor" mask="url(#keyholeClosed)" />
+
+                        <mask id="keyholeClosed">
+                            <rect width="64" height="64" fill="black" />
+                            <path
+                                d="M14 26 H50 A7 7 0 0 1 57 33 V53 A7 7 0 0 1 50 60 H14 A7 7 0 0 1 7 53 V33 A7 7 0 0 1 14 26 Z"
+                                fill="white" />
+                            <path d="M32 35 A5 5 0 0 0 29 44 L27 53 H37 L35 44 A5 5 0 0 0 32 35 Z" fill="black" />
+                        </mask>
+
+                    </svg>
+
+                    <!-- Cadenas ouvert -->
+                    <svg class="lock-open" viewBox="0 0 64 64" width="30" height="30"
+                        xmlns="http://www.w3.org/2000/svg">
+
+                        <path d="M40 29 V19 A12 12 0 0 1 52 7 A12 12 0 0 1 64 19 V21" fill="none" stroke="currentColor"
+                            stroke-width="8" stroke-linecap="round" />
+
+                        <path
+                            d="M14 26 H50 A7 7 0 0 1 57 33 V53 A7 7 0 0 1 50 60 H14 A7 7 0 0 1 7 53 V33 A7 7 0 0 1 14 26 Z"
+                            fill="currentColor" mask="url(#keyholeOpen)" />
+
+                        <mask id="keyholeOpen">
+                            <rect width="64" height="64" fill="black" />
+                            <path
+                                d="M14 26 H50 A7 7 0 0 1 57 33 V53 A7 7 0 0 1 50 60 H14 A7 7 0 0 1 7 53 V33 A7 7 0 0 1 14 26 Z"
+                                fill="white" />
+                            <path d="M32 35 A5 5 0 0 0 29 44 L27 53 H37 L35 44 A5 5 0 0 0 32 35 Z" fill="black" />
+                        </mask>
+
+                    </svg>
+
+                </div>
+            </div>
+
+            <!-- Fenêtre affichant le résultat du tirage -->
+            <div id="resultOverlay" class="result-overlay">
+
+                <div id="resultBox" class="result-box">
+
+                    <button id="closeResult" class="close-result">
+                        ×
+                    </button>
+
+                    <div id="winnerName" class="winner-name"></div>
+
+                    <button id="removeWinner" title="Supprimer définitivement le segment">
+                        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
+
+                            <path d="M3 6h18v1.5H3z" />
+                            <path d="M9 3.5h6V6H9z" />
+                            <path d="M5.5 8h13l-1.2 12.5a1.5 1.5 0 0 1-1.5 1.4H8.2a1.5 1.5 0 0 1-1.5-1.4L5.5 8z" />
+                            <path d="M9 10.5h1.5v8H9zM13.5 10.5H15v8h-1.5z" fill="#383e4b" />
+                        </svg>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Zone de personnalisation -->
+        <section class="editor">
+
+            <div class="editor-buttons">
+
+                <button id="addSegment">
+                    + Ajouter un segment
+                </button>
+
+                <button id="equalPercentages" title="Répartir équitablement">
+                    =
+                </button>
+
+            </div>
+
+            <div id="segmentsList"></div>
+
+            <div class="total">
+                <span>Total des poids :</span>
+                <strong id="totalWeight">0</strong>
+            </div>
+
+            <p class="help">
+                Le poids détermine à la fois la taille du segment
+                et ses chances de gagner.
+            </p>
+
+        </section>
+
+    </main>
+
+    <script type="module" src="/script.js"></script>
+
+    <!-- Fenêtre de confirmation de suppression d'une roue -->
+    <div id="deleteWheelOverlay" class="delete-wheel-overlay">
+        <div class="delete-wheel-box">
+            <div class="delete-wheel-title">Supprimer la roue ?</div>
+
+            <div class="delete-wheel-buttons">
+                <button id="confirmDeleteWheel">Oui</button>
+                <button id="cancelDeleteWheel">Non</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,840 @@
+/* Positionner le titre et le statut en haut à droite */
+header {
+    position: absolute;
+    bottom: 15px;
+    right: 25px;
+    text-align: right;
+    margin: 0;
+}
+
+header p {
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: rgba(32, 35, 43, 0.284);
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    align-items: flex-start;
+}
+
+.wheel-section {
+    order: 2;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.wheel-container {
+    position: relative;
+    width: min(100%, 520px);
+    aspect-ratio: 1 / 1;
+    transform: translateY(20px);
+}
+
+/* Cadenas affiché au centre de la roue */
+.wheel-lock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+
+    color: rgb(60, 60, 60);
+    background: rgba(0, 0, 0, 0);
+    border-radius: 50%;
+
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+/* Position identique pour les deux icônes */
+.wheel-lock svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Cacher le cadenas ouvert par défaut */
+.wheel-lock .lock-open {
+    display: none;
+}
+
+/* Roue verrouillée : cadenas fermé */
+.wheel-lock[data-locked="true"] .lock-closed {
+    display: block;
+}
+
+.wheel-lock[data-locked="true"] .lock-open {
+    display: none;
+}
+
+/* Roue déverrouillée : cadenas ouvert */
+.wheel-lock[data-locked="false"] .lock-closed {
+    display: none;
+}
+
+.wheel-lock[data-locked="false"] .lock-open {
+    display: block;
+}
+
+#wheelCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.pointer {
+    position: absolute;
+    z-index: 2;
+    right: 3.5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 22px solid var(--pointer-color, white);
+}
+
+.editor {
+    position: relative;
+    top: -10px;
+    order: 1;
+    width: 365px;
+    max-width: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #777f91 transparent;
+    padding: 22px 0 22px 22px;
+    border-radius: 3px;
+    background: transparent;
+}
+
+.segment-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: -9px;
+    padding: 8px;
+    background: #383e4b;
+    border-radius: 3px;
+}
+
+.segment-name-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    background: #20232b;
+    border-radius: 3px;
+    padding-left: 9px;
+}
+
+.segment-text {
+    flex: 1;
+    min-width: 0;
+    width: 0;
+    padding: 9px 9px 9px 4px;
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: white;
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.segment-number {
+    color: #a0a5b1;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.segment-weight {
+    width: 35px;
+    min-width: 35px;
+    flex-shrink: 0;
+    padding: 9px 4px;
+    border: none;
+    border-radius: 3px;
+    background: #20232b;
+    color: white;
+    text-align: center;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Pourcentage de probabilité des segments */
+.segment-probability {
+    font-size: 12px;
+}
+
+.remove-segment {
+    width: 30px;
+    height: 10px;
+    padding: 0;
+    border: none;
+    border-radius: 3px;
+    background: transparent;
+    color: #aab2c0;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.remove-segment:hover {
+    background: transparent;
+    color: #dc3545;
+}
+
+button {
+    cursor: pointer;
+}
+
+#addSegment {
+    flex: 1;
+    padding: 12px;
+    margin-top: 8px;
+    background: #6d81fe;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 12px;
+    background: #383e4b;
+    border-radius: 3px;
+}
+
+.help {
+    color: #aab2c0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#validatePercentages {
+    width: 33px;
+    min-width: 33px;
+    height: 33px;
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 0;
+    background: #22a06b;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#equalPercentages {
+    width: 33px;
+    min-width: 33px;
+    height: 33px;
+    margin-bottom: 0;
+    padding: 12px;
+    margin-top: 8px;
+    background: #22a06b;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#addSegment:hover {
+    background: #596ad7;
+}
+
+#equalPercentages:hover {
+    background: #168653;
+}
+
+/* Masquer les flèches des champs numériques */
+
+/* Chrome, Edge, Safari */
+.segment-weight::-webkit-inner-spin-button,
+.segment-weight::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.editor-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.editor-buttons button {
+    height: 33px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#segmentsList {
+    margin-top: 12px;
+}
+
+/* Colonne latérale des roues */
+.wheel-sidebar {
+    order: 0;
+    max-height: 630px;
+    min-height: 630px;
+    width: 70px;
+    min-width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 15px 0;
+    background: #383e4b;
+    border-radius: 3px;
+}
+
+/* Liste des miniatures */
+#wheelList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 305px;
+    max-height: 305px;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    gap: 5px;
+    scrollbar-width: thin;
+    scrollbar-color: #777f91 transparent;
+}
+
+/* Bouton contenant chaque miniature */
+.wheel-item {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    padding: 5px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: #383e4b;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.wheel-item:hover {
+    transform: scale(1.08);
+    border-color: #a78bfa;
+}
+
+.wheel-item.active {
+    border-color: #a78bfa;
+}
+
+.wheel-thumbnail {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: none;
+}
+
+/* Bouton de création et de copie */
+#createWheel {
+    width: 38px;
+    height: 38px;
+    margin-top: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #aab2c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Taille des logos vectoriels */
+#createWheel svg {
+    width: 38px;
+    height: 38px;
+}
+
+/* Survol */
+#createWheel:hover {
+    background: transparent;
+    color: #a78bfa;
+    box-shadow: none;
+    outline: none;
+}
+
+/* Bouton de suppression */
+#deleteWheel {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin: 0 auto;
+    border: none;
+    background: transparent;
+    color: #aab2c0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#deleteWheel:hover {
+    background: transparent;
+    color: #dc3545;
+}
+
+/* Masquer le bouton lorsque l'attribut hidden est actif */
+#deleteWheel[hidden] {
+    display: none;
+}
+
+/* Boutons de visibilité des roues */
+#toggleWheelVisibility,
+#hideWheelVisibility {
+    width: 42px;
+    height: 42px;
+    margin-top: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #aab2c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Taille des icônes */
+#toggleWheelVisibility svg,
+#hideWheelVisibility svg {
+    width: 30px;
+    height: 30px;
+}
+
+/* Survol */
+#toggleWheelVisibility:hover,
+#hideWheelVisibility:hover {
+    background: transparent;
+    color: #a78bfa;
+    box-shadow: none;
+    outline: none;
+}
+
+#openHistory {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-top: auto;
+    margin-bottom: 3px;
+    border: none;
+    background: transparent;
+    color: #aab2c0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+#openHistory:hover {
+    background: transparent;
+    color: #a78bfa;
+}
+
+.sidebar-separator {
+    width: 36px;
+    height: 1px;
+    background: #555c69;
+    margin: 0 auto 8px;
+    flex-shrink: 0;
+}
+
+#openPlayers {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #aab2c0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+#openPlayers:hover {
+    background: transparent;
+    color: #a78bfa;
+}
+
+/* Bouton de personnalisation */
+#toggleEditor {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-bottom: 10px;
+    border: none;
+    background: transparent;
+    color: #aab2c0;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#toggleEditor:hover {
+    background: transparent;
+    color: #6d81fe;
+}
+
+/* Engrenage bleu lorsque le panneau est ouvert */
+.container:has(.editor:not(.collapsed)) #toggleEditor {
+    color: #6d81fe;
+}
+
+/* Adaptation aux petits écrans */
+@media (max-width: 850px) {
+
+    #deleteWheel {
+        width: auto;
+        padding: 10px;
+    }
+}
+
+.wheel-item:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+}
+
+/* Fenêtre de résultat */
+.result-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.wheel-section.result-visible .wheel-container {
+    visibility: hidden;
+}
+
+/* Rectangle du résultat */
+.result-box {
+    position: relative;
+    width: 75%;
+    min-height: 150px;
+    padding: 35px 55px;
+    border: 3px solid var(--pointer-color, white);
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Bouton de suppression du segment gagnant */
+#removeWinner {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+
+    width: 40px;
+    height: 40px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+    color: var(--pointer-color, white);
+
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#removeWinner:hover {
+    background: transparent;
+    color: #dc3545;
+}
+
+/* Nom du gagnant */
+.winner-name {
+    font-size: 32px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+    overflow-wrap: anywhere;
+
+    /* Ombre légère */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.532);
+}
+
+/* Petit bouton de fermeture */
+.close-result {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--pointer-color, white);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+/* Ombre de l'icône poubelle */
+#removeWinner svg {
+    filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.35));
+}
+
+/* Interface lorsqu'aucune roue n'existe */
+
+.no-wheels .wheel-section,
+.no-wheels .editor,
+.no-wheels #deleteWheel {
+    display: none;
+}
+
+body.no-wheels header,
+body.no-wheel-selected header {
+    display: none;
+}
+
+body.no-wheels .wheel-sidebar {
+    max-height: 630px;
+    min-height: 630px;
+    flex: 0 0 auto;
+    gap: 10px;
+    justify-content: flex-start;
+    padding: 10px 8px;
+    margin: 0;
+    border-radius: 0;
+}
+
+/* Masquer le panneau de personnalisation lorsqu'il est replié */
+.editor.collapsed {
+    display: none;
+}
+
+/* Fenêtre de confirmation de suppression */
+.delete-wheel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Bloc rouge de confirmation */
+.delete-wheel-box {
+    background: #dc3545;
+    border: 3px solid #8b1e2d;
+    border-radius: 3px;
+    padding: 25px 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Texte de confirmation */
+.delete-wheel-title {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* Boutons Oui et Non */
+.delete-wheel-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.delete-wheel-buttons button {
+    min-width: 65px;
+    padding: 8px 15px;
+    border: 2px solid #8b1e2d;
+    border-radius: 3px;
+    background: white;
+    color: #8b1e2d;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Masquer l'engrenage lorsqu'il n'y a aucune roue */
+body.no-wheels #toggleEditor {
+    display: none;
+}
+
+/* Interface lorsqu'aucune roue n'est sélectionnée */
+
+.no-wheel-selected .wheel-section,
+.no-wheel-selected .editor,
+.no-wheel-selected #deleteWheel,
+.no-wheel-selected #toggleEditor {
+    display: none;
+}
+
+#wheelTitle {
+    color: var(--pointer-color);
+    text-align: center;
+    margin: 0 0 5px 0;
+    position: relative;
+    top: 25px;
+}
+
+/* Fenêtre de l'historique */
+.history-window {
+    position: fixed;
+    width: 370px;
+    padding: 15px;
+    background: #383e4b;
+    border-radius: 3px;
+    color: #ffffff;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* En-tête de l'historique */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* Liste des résultats */
+#historyList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.history-entry {
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+/* Fenêtre de la liste des joueurs */
+.player-list-window {
+    position: fixed;
+    width: 370px;
+    padding: 15px;
+    background: #383e4b;
+    border-radius: 3px;
+    color: #ffffff;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* En-tête de la liste des joueurs */
+.player-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* Liste des joueurs */
+#playerList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 13px;
+}
+
+/* Ligne individuelle d'un joueur */
+.player-list-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.player-list-entry:hover {
+    background: rgba(167, 139, 250, 0.2);
+}
+
+body.no-wheel-selected #wheelList {
+    height: 370px;
+    max-height: 370px;
+}
+
+/* Alignement des colonnes latérales dans les états réduits */
+body.no-wheel-selected .wheel-sidebar,
+body.no-wheels .wheel-sidebar {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.wheel-sidebar #createWheel {
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wheel-sidebar>button {
+    flex-shrink: 0;
+}
+
+body.no-wheels #wheelList {
+    display: none;
+}

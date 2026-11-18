@@ -1,0 +1,12 @@
+{
+    "name": "Roue personnalisée",
+    "version": "1.0.0",
+    "manifest_version": 1,
+    "action": {
+        "title": "Roue personnalisée",
+        "icon": "/icon.svg",
+        "popover": "/",
+        "height": 630,
+        "width": 900
+    }
+}
